@@ -1,0 +1,9 @@
+venv
+gdf
+test
+requirements.txt
+__pycache__
+images/*
+results/*
+models/*
+!.gitkeep
