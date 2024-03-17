@@ -1,7 +1,7 @@
 # DiffuseFlow
 ---
 
-![UIの紹介](figures\BaseUI.png)
+![UIの紹介](https://github.com/kizamimi/DiffuseFlow/blob/main/figures/BaseUI.png)
 
 ## 実行方法
 start.batを実行するだけ、環境構築と起動を同時にします。
