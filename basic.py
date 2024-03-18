@@ -164,7 +164,7 @@ class paint_page():
 
         self.paint_tag = flet.Row([
             flet.Icon(name=flet.icons.FORMAT_PAINT_ROUNDED),
-            flet.Text("Pencil", size=16),
+            flet.Text("Process", size=16),
         ], vertical_alignment=flet.CrossAxisAlignment.CENTER)
 
         self.paint_menu = flet.Column(controls=[

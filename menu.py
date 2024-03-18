@@ -15,48 +15,6 @@ menubar = flet.MenuBar(
                                   flet.MaterialState.DEFAULT: flet.colors.BLACK87}),
                     on_click=menu_click,
                 ),
-                flet.MenuItemButton(
-                    content=flet.Text("Professional",style=flet.TextStyle(color=flet.colors.WHITE)),
-                    style=flet.ButtonStyle(bgcolor={flet.MaterialState.HOVERED: flet.colors.BLACK38,\
-                                  flet.MaterialState.DEFAULT: flet.colors.BLACK87}),
-                    on_click=menu_click,
-                ),
-                flet.MenuItemButton(
-                    content=flet.Text("Batch",style=flet.TextStyle(color=flet.colors.WHITE)),
-                    style=flet.ButtonStyle(bgcolor={flet.MaterialState.HOVERED: flet.colors.BLACK38,\
-                                  flet.MaterialState.DEFAULT: flet.colors.BLACK87}),
-                    on_click=menu_click,
-                ),
-                flet.MenuItemButton(
-                    content=flet.Text("Paint",style=flet.TextStyle(color=flet.colors.WHITE)),
-                    style=flet.ButtonStyle(bgcolor={flet.MaterialState.HOVERED: flet.colors.BLACK38,\
-                                  flet.MaterialState.DEFAULT: flet.colors.BLACK87}),
-                    on_click=menu_click,
-                ),
-                flet.MenuItemButton(
-                    content=flet.Text("PromptEdit",style=flet.TextStyle(color=flet.colors.WHITE)),
-                    style=flet.ButtonStyle(bgcolor={flet.MaterialState.HOVERED: flet.colors.BLACK38,\
-                                  flet.MaterialState.DEFAULT: flet.colors.BLACK87}),
-                    on_click=menu_click,
-                ),
-            ],
-            style=flet.ButtonStyle(bgcolor={flet.MaterialState.HOVERED: flet.colors.WHITE38}),
-        ),
-        flet.SubmenuButton(
-            content=flet.Text("Statistics",style=flet.TextStyle(color=flet.colors.WHITE)),
-            controls=[
-                flet.MenuItemButton(
-                    content=flet.Text("CLIP",style=flet.TextStyle(color=flet.colors.WHITE)),
-                    style=flet.ButtonStyle(bgcolor={flet.MaterialState.HOVERED: flet.colors.BLACK38,\
-                                  flet.MaterialState.DEFAULT: flet.colors.BLACK87}),
-                    on_click=menu_click,
-                ),
-                flet.MenuItemButton(
-                    content=flet.Text("FID",style=flet.TextStyle(color=flet.colors.WHITE)),
-                    style=flet.ButtonStyle(bgcolor={flet.MaterialState.HOVERED: flet.colors.BLACK38,\
-                                  flet.MaterialState.DEFAULT: flet.colors.BLACK87}),
-                    on_click=menu_click,
-                ),
             ],
             style=flet.ButtonStyle(bgcolor={flet.MaterialState.HOVERED: flet.colors.WHITE38}),
         ),

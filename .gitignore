@@ -2,6 +2,7 @@ venv
 gdf
 test
 requirements.txt
+dependencies.txt
 __pycache__
 images/*
 results/*
