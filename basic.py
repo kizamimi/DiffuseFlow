@@ -7,13 +7,12 @@ from io import BytesIO
 from PIL import Image
 import time
 import copy
+import glob
 
 from menu import menubar
 
 height = 500
 width = 800
-
-model_path = "./models/kuronekoAnimemixV10_v10.safetensors"
 
 class setting_page():
     def __init__(self, page:flet.Page) -> None:
@@ -254,10 +253,6 @@ class image_page():
         self.on = flet.colors.LIGHT_BLUE_200
         self.off = flet.colors.BLACK26
 
-        def button_clicked(e):
-            self.page.update()
-        self.model_title = flet.OutlinedButton("", on_click=button_clicked, data=0)
-        self.model_load()
         self.img = flet.Image(
             src=f"./figures/icon.png",
             width=self.get_use_width()//3,
@@ -342,6 +337,31 @@ class image_page():
 
         self.gen_button = flet.ElevatedButton("Generate", on_click=generate, data=0)
 
+        def on_change(e: flet.ControlEvent):
+            if self.params["model_name"] == e.data:
+                return
+            self.on_model_loading()
+            pipe_t2i: StableDiffusionPipeline = StableDiffusionPipeline.from_single_file(e.data, \
+                torch_dtype=torch.float16)
+            pipe_t2i = pipe_t2i.to("cuda")
+            pipe_i2i = StableDiffusionImg2ImgPipeline(pipe_t2i.vae, pipe_t2i.text_encoder, \
+                                                        pipe_t2i.tokenizer, pipe_t2i.unet,\
+                                                            pipe_t2i.scheduler, pipe_t2i.safety_checker,\
+                                                                pipe_t2i.feature_extractor)
+            pipe_t2i.safety_checker = None
+            pipe_i2i.safety_checker = None
+            self.params["pipe_t2i"] = pipe_t2i
+            self.params["pipe_i2i"] = pipe_i2i
+            self.finish_generate()
+            self.page.update()
+
+        self.model_title = flet.Dropdown(
+            width=self.get_use_width()//4,
+            options=[
+            ],
+            on_change=on_change,
+        )
+
         def pick_files_result(e: flet.FilePickerResultEvent):
             if e.files:
                 input_image = Image.open(e.files[0].path).convert('RGB')
@@ -384,7 +404,15 @@ class image_page():
         model_name = self.params["model_name"]
         if len(model_name) > 16:
             model_name = model_name[0:16]
-        self.model_title.text = model_name
+        
+        self.model_title.options = []
+        for model_name in self.params["model_list"]:
+            self.model_title.options.append(flet.dropdown.Option(model_name, text=model_name[9:24]+"..."))
+        for option in self.model_title.options:
+            option: flet.dropdown.Option = option
+            if option.key == model_name:
+                self.model_title.value = option.key
+        self.page.update()
 
     def on_model_loading(self):
         self.gen_button.disabled = True
@@ -440,26 +468,31 @@ class basic_window():
         self.params["prompt"] = flet.TextField(label="prompt", value="best quality, 1girl")
         self.params["negative"] = flet.TextField(label="negative_prompt", value="nsfw, low quality, worst quality")
         self.params["strength_val"] = flet.TextField(label="strength", value="0.5")
-        self.params["model_name"] = "kuronekoAnimemix"
+        self.params["model_name"] = ""
+        self.params["model_list"] = []
 
     def get_use_width(self) -> int:
         return int(self.page.window_width - 50)
 
     def model_load(self) -> None:
+        self.params["model_list"] = glob.glob("./models/*")
         self.image_page.on_model_loading()
         self.page.update()
-        pipe_t2i: StableDiffusionPipeline = StableDiffusionPipeline.from_single_file(model_path, \
-            torch_dtype=torch.float16)
-        pipe_t2i = pipe_t2i.to("cuda")
-        pipe_i2i = StableDiffusionImg2ImgPipeline(pipe_t2i.vae, pipe_t2i.text_encoder, \
-                                                       pipe_t2i.tokenizer, pipe_t2i.unet,\
-                                                        pipe_t2i.scheduler, pipe_t2i.safety_checker,\
-                                                            pipe_t2i.feature_extractor)
-        pipe_t2i.safety_checker = None
-        pipe_i2i.safety_checker = None
-        self.params["pipe_t2i"] = pipe_t2i
-        self.params["pipe_i2i"] = pipe_i2i
-        self.image_page.finish_generate()
+        if len(self.params["model_list"]) > 0:
+            self.params["model_name"] = self.params["model_list"][0]
+            pipe_t2i: StableDiffusionPipeline = StableDiffusionPipeline.from_single_file(self.params["model_list"][0], \
+                torch_dtype=torch.float16)
+            pipe_t2i = pipe_t2i.to("cuda")
+            pipe_i2i = StableDiffusionImg2ImgPipeline(pipe_t2i.vae, pipe_t2i.text_encoder, \
+                                                        pipe_t2i.tokenizer, pipe_t2i.unet,\
+                                                            pipe_t2i.scheduler, pipe_t2i.safety_checker,\
+                                                                pipe_t2i.feature_extractor)
+            pipe_t2i.safety_checker = None
+            pipe_i2i.safety_checker = None
+            self.params["pipe_t2i"] = pipe_t2i
+            self.params["pipe_i2i"] = pipe_i2i
+            self.image_page.finish_generate()
+            self.image_page.model_load()
         self.page.update()
 
     def update(self) -> None:
